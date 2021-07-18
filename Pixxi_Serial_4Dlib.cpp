@@ -54,9 +54,9 @@ void Pixxi_Serial_4DLib::WriteChars(char * charsout)
 	HAL_UART_Transmit(_huart, (uint8_t *) charsout, numBytes, 10) ;
 }
 
-void Pixxi_Serial_4DLib::WriteBytes(char * source, int size)
+void Pixxi_Serial_4DLib::WriteBytes(uint8_t * source, int size)
 {
-	HAL_UART_Transmit(_huart, (uint8_t *) source, size, 10);
+	HAL_UART_Transmit(_huart, source, size, 10);
 }
 
 void Pixxi_Serial_4DLib::WriteWords(uint16_t * Source, int Size)
@@ -71,11 +71,9 @@ void Pixxi_Serial_4DLib::WriteWords(uint16_t * Source, int Size)
   }
 }
 
-void Pixxi_Serial_4DLib::getbytes(char * data, int size)
+void Pixxi_Serial_4DLib::getbytes(uint8_t * data, int size)
 {
-	uint8_t readData = 0;
-
-	int response = HAL_UART_Receive(_huart, &readData, size, TimeLimit4D);
+	int response = HAL_UART_Receive(_huart, data, size, TimeLimit4D);
 
 	if (response != HAL_OK)
 	{
@@ -136,27 +134,27 @@ uint16_t Pixxi_Serial_4DLib::GetWord(void)
 
 void Pixxi_Serial_4DLib::getString(char * outStr, int strLen)
 {
-  int readc ;
-  unsigned long sttime ;
+	if (Error4D != Err4D_OK)
+	{
+		outStr[0] = 0 ;
+		return ;
+	}
 
-  if (Error4D != Err4D_OK)
-  {
-    outStr[0] = 0 ;
-    return ;
-  }
-  readc    = 0 ;
-  while ((readc != strLen))
-  {
-    HAL_UART_Receive(_huart, (uint8_t *)outStr[readc++], 1, TimeLimit4D);
-  }
+	int response = HAL_UART_Receive(_huart, (uint8_t *) outStr, strLen, TimeLimit4D);
 
-  if (readc != strLen)
-  {
-    Error4D  = Err4D_Timeout ;
-    if (Callback4D != NULL)
-      Callback4D(Error4D, Error4D_Inv) ;
-  }
-  outStr[readc] = 0 ;
+	if (response != HAL_OK)
+	{
+		//Flush the buffer
+		HAL_UART_AbortReceive(_huart);
+
+		Error4D  = Err4D_Timeout ;
+		if (Callback4D != NULL)
+			Callback4D(Error4D, Error4D_Inv) ;
+	}
+
+	//Add a terminator
+	//TODO: Not sure if this is required?
+	outStr[strLen - 1] = 0 ;
 }
 
 uint16_t Pixxi_Serial_4DLib::GetAckResp(void)
@@ -186,6 +184,10 @@ uint16_t Pixxi_Serial_4DLib::GetAckResp(void)
 	return (uint16_t) ((readx[1] << 8) | (readx[2] & 0xFF));
 }
 
+/*
+ * TODO: These next five GET functions probably won't work but I haven't tested them yet.
+ * Suggest using the native HAL_Receive function with the specified number of bytes.
+ */
 uint16_t Pixxi_Serial_4DLib::GetAckRes2Words(uint16_t * word1, uint16_t * word2)
 {
 	int Result ;
@@ -196,6 +198,7 @@ uint16_t Pixxi_Serial_4DLib::GetAckRes2Words(uint16_t * word1, uint16_t * word2)
 	return Result ;
 }
 
+//TODO: Fix This
 void Pixxi_Serial_4DLib::GetAck2Words(uint16_t * word1, uint16_t * word2)
 {
 	GetAck() ;
@@ -203,7 +206,8 @@ void Pixxi_Serial_4DLib::GetAck2Words(uint16_t * word1, uint16_t * word2)
 	*word2 = GetWord() ;
 }
 
-uint16_t Pixxi_Serial_4DLib::GetAckResSector(t4DSector Sector)
+//TODO: Fix this
+uint16_t Pixxi_Serial_4DLib::GetAckResSector(uint8_t * Sector)
 {
 	int Result ;
 	GetAck() ;
@@ -212,6 +216,7 @@ uint16_t Pixxi_Serial_4DLib::GetAckResSector(t4DSector Sector)
 	return Result ;
 }
 
+//TODO: Fix this
 uint16_t Pixxi_Serial_4DLib::GetAckResStr(char * OutStr)
 {
 	int Result ;
@@ -221,7 +226,8 @@ uint16_t Pixxi_Serial_4DLib::GetAckResStr(char * OutStr)
 	return Result ;
 }
 
-uint16_t Pixxi_Serial_4DLib::GetAckResData(t4DByteArray OutData, uint16_t size)
+//TODO: Fix this
+uint16_t Pixxi_Serial_4DLib::GetAckResData(uint8_t * OutData, uint16_t size)
 {
 	int Result ;
 	GetAck() ;
@@ -232,7 +238,7 @@ uint16_t Pixxi_Serial_4DLib::GetAckResData(t4DByteArray OutData, uint16_t size)
 
 void Pixxi_Serial_4DLib::SetThisBaudrate(int Newrate)
 {
-	//this probably isn't needed on this MCU
+	//this probably isn't needed on this MCU, I dunno
 }
 
 //*********************************************************************************************//
@@ -280,15 +286,15 @@ void Pixxi_Serial_4DLib::bus_Write(uint16_t bits)
 uint16_t Pixxi_Serial_4DLib::charheight(char  testChar)
 {
 	WriteInt(F_charheight);
-	WriteBytes(&testChar, 1);
+	WriteBytes((uint8_t *) testChar, 1);
 
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::charwidth(char  testChar)
+uint16_t Pixxi_Serial_4DLib::charwidth(char testChar)
 {
 	WriteInt(F_charwidth);
-	WriteBytes(&testChar, 1);
+	WriteBytes((uint8_t *) testChar, 1);
 
 	return GetAckResp();
 }
@@ -456,7 +462,7 @@ uint16_t Pixxi_Serial_4DLib::file_Open(char *  filename, char  mode)
 {
 	WriteInt(F_file_Open);
 	WriteChars(filename);
-	WriteBytes(&mode, 1);
+	WriteBytes((uint8_t *) mode, 1);
 
 	return GetAckResp();
 }
@@ -496,7 +502,7 @@ uint16_t Pixxi_Serial_4DLib::file_PutW(uint16_t  word, uint16_t  handle)
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::file_Read(t4DByteArray  data, uint16_t  size, uint16_t  handle)
+uint16_t Pixxi_Serial_4DLib::file_Read(uint8_t *  data, uint16_t  size, uint16_t  handle)
 {
 	WriteInt(F_file_Read);
 	WriteInt(size);
@@ -568,7 +574,7 @@ void Pixxi_Serial_4DLib::file_Unmount()
 	GetAck();
 }
 
-uint16_t Pixxi_Serial_4DLib::file_Write(uint16_t  size, t4DByteArray  source, uint16_t  handle)
+uint16_t Pixxi_Serial_4DLib::file_Write(uint16_t  size, uint8_t * source, uint16_t  handle)
 {
 	WriteInt(F_file_Write);
 	WriteInt(size);
@@ -1203,7 +1209,7 @@ uint16_t Pixxi_Serial_4DLib::media_Init()
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::media_RdSector(t4DSector  SectorIn)
+uint16_t Pixxi_Serial_4DLib::media_RdSector(uint8_t *  SectorIn)
 {
 	WriteInt(F_media_RdSector);
 
@@ -1277,7 +1283,7 @@ uint16_t Pixxi_Serial_4DLib::media_WriteWord(uint16_t  Word)
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::media_WrSector(t4DSector  SectorOut)
+uint16_t Pixxi_Serial_4DLib::media_WrSector(uint8_t *  SectorOut)
 {
 	WriteInt(F_media_WrSector);
 	WriteBytes(SectorOut, 512);
@@ -1675,7 +1681,7 @@ uint16_t Pixxi_Serial_4DLib::readString(uint16_t  Handle, char *  StringIn)
 	return GetAckResStr(StringIn);
 }
 
-void Pixxi_Serial_4DLib::blitComtoDisplay(uint16_t  X, uint16_t  Y, uint16_t  Width, uint16_t  Height, t4DByteArray  Pixels)
+void Pixxi_Serial_4DLib::blitComtoDisplay(uint16_t  X, uint16_t  Y, uint16_t  Width, uint16_t  Height, uint8_t *  Pixels)
 {
 	WriteInt(F_blitComtoDisplay);
 	WriteInt(X);
@@ -1838,7 +1844,7 @@ uint16_t Pixxi_Serial_4DLib::widget_InitString(char * str)
 {
 	uint16_t len = strlen(str);
 	uint16_t addr = mem_Alloc(len);
-	SendByteArrayToRAM(addr, len, str);
+	SendByteArrayToRAM(addr, len, (uint8_t *) str);
 
 	return addr;
 }
@@ -1851,7 +1857,7 @@ uint16_t Pixxi_Serial_4DLib::widget_InitStringPtr(char * str)
 uint16_t Pixxi_Serial_4DLib::widget_InitStringArray(char * str, uint16_t len)
 {
 	uint16_t addr = mem_Alloc(len);
-	SendByteArrayToRAM(addr, len, str);
+	SendByteArrayToRAM(addr, len, (uint8_t *) str);
 	addr = str_Ptr(addr);
 
 	return addr;
@@ -1882,7 +1888,7 @@ void Pixxi_Serial_4DLib::SendWordArrayToRAM(uint16_t  hndl, uint16_t  length, ui
 	GetAck();
 }
 
-void Pixxi_Serial_4DLib::SendByteArrayToRAM(uint16_t  hndl, uint16_t  length, char * data)
+void Pixxi_Serial_4DLib::SendByteArrayToRAM(uint16_t  hndl, uint16_t  length, uint8_t * data)
 {
 	WriteInt(F_sendByteArrayToRAM);
 	WriteInt(hndl);

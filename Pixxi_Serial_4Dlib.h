@@ -38,7 +38,7 @@ class Pixxi_Serial_4DLib
 		uint16_t file_Dir(char *  Filename);
 		uint16_t file_Erase(char *  Filename);
 		uint16_t file_Error();
-		uint16_t file_Exec(char *  Filename, uint16_t  ArgCount, t4DWordArray  Args);
+		uint16_t file_Exec(char *  Filename, uint16_t  ArgCount, uint16_t *  Args);
 		uint16_t file_Exists(char *  Filename);
 		uint16_t file_FindFirst(char *  Filename);
 		uint16_t file_FindNext();
@@ -57,15 +57,15 @@ class Pixxi_Serial_4DLib
 		uint16_t file_PutC(char  Character, uint16_t  Handle);
 		uint16_t file_PutS(char *  StringOut, uint16_t  Handle);
 		uint16_t file_PutW(uint16_t  Word, uint16_t  Handle);
-		uint16_t file_Read(t4DByteArray  Data, uint16_t  Size, uint16_t  Handle);
+		uint16_t file_Read(uint8_t *  Data, uint16_t  Size, uint16_t  Handle);
 		uint16_t file_Rewind(uint16_t  Handle);
-		uint16_t file_Run(char *  Filename, uint16_t  ArgCount, t4DWordArray  Args);
+		uint16_t file_Run(char *  Filename, uint16_t  ArgCount, uint16_t *  Args);
 		uint16_t file_ScreenCapture(uint16_t  X, uint16_t  Y, uint16_t  Width, uint16_t  Height, uint16_t  Handle);
 		uint16_t file_Seek(uint16_t  Handle, uint16_t  HiWord, uint16_t  LoWord);
 		uint16_t file_Size(uint16_t  Handle, uint16_t *  HiWord, uint16_t *  LoWord);
 		uint16_t file_Tell(uint16_t  Handle, uint16_t *  HiWord, uint16_t *  LoWord);
 		void file_Unmount();
-		uint16_t file_Write(uint16_t  Size, t4DByteArray  Source, uint16_t  Handle);
+		uint16_t file_Write(uint16_t  Size, uint8_t * Source, uint16_t  Handle);
 		uint16_t gfx_BevelShadow(uint16_t  Value);
 		uint16_t gfx_BevelWidth(uint16_t  Value);
 		uint16_t gfx_BGcolour(uint16_t  Color);
@@ -89,9 +89,9 @@ class Pixxi_Serial_4DLib
 		uint16_t gfx_Orbit(uint16_t  Angle, uint16_t  Distance, uint16_t *  Xdest, uint16_t *  Ydest);
 		uint16_t gfx_OutlineColour(uint16_t  Color);
 		void gfx_Panel(uint16_t  Raised, uint16_t  X, uint16_t  Y, uint16_t  Width, uint16_t  Height, uint16_t  Color);
-		void gfx_Polygon(uint16_t  n, t4DWordArray  Xvalues, t4DWordArray  Yvalues, uint16_t  Color);
-		void gfx_PolygonFilled(uint16_t  n, t4DWordArray  Xvalues, t4DWordArray  Yvalues, uint16_t  Color);
-		void gfx_Polyline(uint16_t  n, t4DWordArray  Xvalues, t4DWordArray  Yvalues, uint16_t  Color);
+		void gfx_Polygon(uint16_t  n, uint16_t *  Xvalues, uint16_t *  Yvalues, uint16_t  Color);
+		void gfx_PolygonFilled(uint16_t  n, uint16_t *  Xvalues, uint16_t *  Yvalues, uint16_t  Color);
+		void gfx_Polyline(uint16_t  n, uint16_t *  Xvalues, uint16_t *  Yvalues, uint16_t  Color);
 		void gfx_PutPixel(uint16_t  X, uint16_t  Y, uint16_t  Color);
 		void gfx_Rectangle(uint16_t  X1, uint16_t  Y1, uint16_t  X2, uint16_t  Y2, uint16_t  Color);
 		void gfx_RectangleFilled(uint16_t  X1, uint16_t  Y1, uint16_t  X2, uint16_t  Y2, uint16_t  Color);
@@ -131,7 +131,7 @@ class Pixxi_Serial_4DLib
 		uint16_t media_Flush();
 		void media_Image(uint16_t  X, uint16_t  Y);
 		uint16_t media_Init();
-		uint16_t media_RdSector(t4DSector  SectorIn);
+		uint16_t media_RdSector(uint8_t *  SectorIn);
 		uint16_t media_ReadByte();
 		uint16_t media_ReadWord();
 		void media_SetAdd(uint16_t  HiWord, uint16_t  LoWord);
@@ -140,7 +140,7 @@ class Pixxi_Serial_4DLib
 		void media_VideoFrame(uint16_t  X, uint16_t  Y, uint16_t  Framenumber);
 		uint16_t media_WriteByte(uint16_t  Byte);
 		uint16_t media_WriteWord(uint16_t  Word);
-		uint16_t media_WrSector(t4DSector  SectorOut);
+		uint16_t media_WrSector(uint8_t *  SectorOut);
 		uint16_t mem_Alloc(uint16_t size);
 		uint16_t mem_Free(uint16_t  Handle);
 		uint16_t mem_Heap();
@@ -187,15 +187,15 @@ class Pixxi_Serial_4DLib
 		uint16_t txt_Wrap(uint16_t  Position);
 		uint16_t txt_Xgap(uint16_t  Pixels);
 		uint16_t txt_Ygap(uint16_t  Pixels);
-		uint16_t file_CallFunction(uint16_t  Handle, uint16_t  ArgCount, t4DWordArray  Args);
+		uint16_t file_CallFunction(uint16_t  Handle, uint16_t  ArgCount, uint16_t *  Args);
 		uint16_t sys_GetModel(char *  ModelStr);
 		uint16_t sys_GetVersion();
 		uint16_t sys_GetPmmC();
 		uint16_t writeString(uint16_t  Handle, char *  StringOut);
 		uint16_t readString(uint16_t  Handle, char *  StringIn);
-		void blitComtoDisplay(uint16_t  X, uint16_t  Y, uint16_t  Width, uint16_t  Height, t4DByteArray  Pixels);
+		void blitComtoDisplay(uint16_t  X, uint16_t  Y, uint16_t  Width, uint16_t  Height, uint8_t *  Pixels);
 		void SendWordArrayToRAM(uint16_t  hndl, uint16_t  length, uint16_t * data);
-		void SendByteArrayToRAM(uint16_t  hndl, uint16_t  length, char * data);
+		void SendByteArrayToRAM(uint16_t  hndl, uint16_t  length, uint8_t * data);
 		uint16_t file_FindFirstRet(char *  Filename, char *  StringIn);
 		uint16_t file_FindNextRet(char *  StringIn);
 		void setbaudWait(uint16_t  Newrate);
@@ -238,17 +238,17 @@ class Pixxi_Serial_4DLib
 
 		//Intrinsic 4D Routines
 		void WriteChars(char * charsout);
-		void WriteBytes(char * Source, int Size);
+		void WriteBytes(uint8_t * Source, int Size);
 		void WriteWords(uint16_t * Source, int Size);
-		void getbytes(char * data, int size);
+		void getbytes(uint8_t * data, int size);
 		uint16_t GetWord(void);
 		void getString(char * outStr, int strLen);
 		uint16_t GetAckResp(void);
 		uint16_t GetAckRes2Words(uint16_t * word1, uint16_t * word2);
 		void GetAck2Words(uint16_t * word1, uint16_t * word2);
-		uint16_t GetAckResSector(t4DSector Sector);
+		uint16_t GetAckResSector(uint8_t * Sector);
 		uint16_t GetAckResStr(char * OutStr);
-		uint16_t GetAckResData(t4DByteArray OutData, uint16_t size);
+		uint16_t GetAckResData(uint8_t * OutData, uint16_t size);
 		void SetThisBaudrate(int Newrate);
 
 		void printNumber(unsigned long, uint8_t);
