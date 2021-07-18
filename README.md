@@ -18,7 +18,7 @@ An example program is included in *main.cpp* which initialises the display, init
 ```
 Pixxi_Serial_4DLib Display(&huart1);
 ```
-* Reset the display by pulling the **RESET** pin LOW for at least 2 microseconds.
+* Reset the display by pulling the **RESET** pin LOW for at least 2 microseconds (return to idle HIGH).
 * Set the display to **LANDSCAPE** or **PORTRAIT**
 ```
 Display.gfx_ScreenMode(PORTRAIT);
