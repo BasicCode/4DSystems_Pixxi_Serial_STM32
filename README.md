@@ -1,9 +1,10 @@
 # 4D Systems Pixxi Based Displays: Serial Interface
 
 This is a direct port of the serial display library for 4D Systems' Pixxi based display modules for use with the STM32 HAL library.<br>
-This library implements the HAL UART and GPIO features; all of the hardware serial interactions are contained in the first few functios if you need to modify them to suit your particular project.
+This library implements the HAL UART and GPIO features; all of the hardware serial interactions are contained in the first few functions if you need to modify them to suit your particular project.
 
 * Original manufacturer code is available here: https://github.com/4dsystems/Pixxi-Serial-Arduino-Library/.
+* Manufacturer's site and store: https://4dsystems.com.au/.
 
 ## Installation
 * NOTE: An aditional file containing the commands and other constants is required. Download *Pixxi_Const4D.h* from the above library and include it with your project.
@@ -12,7 +13,8 @@ want to include this in your own project.
 
 ## Usage
 An example program is included in *main.cpp* which initialises the display, initialises the SD / FLASH storage, and displays some shaped.
-* Create an instance of the Pixxi Serial class.
+* Initialise your favourite UART port at **115200 baud**, 8-bit, no parity, single stop bit.
+* Create an instance of the Pixxi Serial class with a pointer to the above UART port.
 ```
 Pixxi_Serial_4DLib Display(&huart1);
 ```
