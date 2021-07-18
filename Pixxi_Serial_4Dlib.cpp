@@ -185,25 +185,69 @@ uint16_t Pixxi_Serial_4DLib::GetAckResp(void)
 }
 
 /*
- * TODO: These next five GET functions probably won't work but I haven't tested them yet.
+ * TODO: These next five GET functions probably won't work and I have not tested them yet.
  * Suggest using the native HAL_Receive function with the specified number of bytes.
  */
 uint16_t Pixxi_Serial_4DLib::GetAckRes2Words(uint16_t * word1, uint16_t * word2)
 {
-	int Result ;
-	GetAck() ;
-	Result = GetWord() ;
-	*word1 = GetWord() ;
-	*word2 = GetWord() ;
-	return Result ;
+
+	uint8_t readx[7] = {0, 0, 0, 0, 0, 0, 0};
+	Error4D = Err4D_OK;
+
+	int response = HAL_UART_Receive(_huart, readx, 7, TimeLimit4D);
+
+	if (response != HAL_OK)
+	{
+		//Flush the buffer
+		HAL_UART_AbortReceive(_huart);
+
+		Error4D = Err4D_Timeout;
+		if (Callback4D != NULL)
+			Callback4D(Error4D, Error4D_Inv);
+	}
+	else if (readx[0] != 6)
+	{
+		Error4D = Err4D_NAK;
+		Error4D_Inv = readx[0];
+		if (Callback4D != NULL)
+			Callback4D(Error4D, Error4D_Inv);
+	}
+
+	//Update the provided buffers
+	*word1 = (readx[3] << 8) | (readx[4] & 0xFF);
+	*word2 = (readx[5] << 8) | (readx[6] & 0xFF);
+
+	//Return result code
+	return (readx[1] << 8) | (readx[2] & 0xFF);
 }
 
-//TODO: Fix This
 void Pixxi_Serial_4DLib::GetAck2Words(uint16_t * word1, uint16_t * word2)
 {
-	GetAck() ;
-	*word1 = GetWord() ;
-	*word2 = GetWord() ;
+	uint8_t readx[5] = {0, 0, 0, 0, 0};
+	Error4D = Err4D_OK;
+
+	int response = HAL_UART_Receive(_huart, readx, 5, TimeLimit4D);
+
+	if (response != HAL_OK)
+	{
+		//Flush the buffer
+		HAL_UART_AbortReceive(_huart);
+
+		Error4D = Err4D_Timeout;
+		if (Callback4D != NULL)
+			Callback4D(Error4D, Error4D_Inv);
+	}
+	else if (readx[0] != 6)
+	{
+		Error4D = Err4D_NAK;
+		Error4D_Inv = readx[0];
+		if (Callback4D != NULL)
+			Callback4D(Error4D, Error4D_Inv);
+	}
+
+	//Update the provided buffers
+	*word1 = (readx[1] << 8) | (readx[2] & 0xFF);
+	*word2 = (readx[3] << 8) | (readx[4] & 0xFF);
 }
 
 //TODO: Fix this
@@ -270,7 +314,7 @@ void Pixxi_Serial_4DLib::bus_Set(uint16_t IOMap)
 	HAL_UART_Transmit(_huart, (uint8_t *) (F_bus_Set >> 8), 1, 10) ;
 	HAL_UART_Transmit(_huart, (uint8_t *) (F_bus_Set), 1, 10) ;
 	HAL_UART_Transmit(_huart, (uint8_t *) (IOMap >> 8), 1, 10) ;
-	HAL_UART_Transmit(_huart, (uint8_t *) (IOMap), 1, 10) ;
+	HAL_UART_Transmit(_huart, (uint8_t *) (IOMap & 0xFF), 1, 10) ;
 	GetAck() ;
 }
 
@@ -279,7 +323,7 @@ void Pixxi_Serial_4DLib::bus_Write(uint16_t bits)
 	HAL_UART_Transmit(_huart, (uint8_t *) (F_bus_Write >> 8), 1, 10) ;
 	HAL_UART_Transmit(_huart, (uint8_t *) (F_bus_Write), 1, 10) ;
 	HAL_UART_Transmit(_huart, (uint8_t *) (bits >> 8), 1, 10) ;
-	HAL_UART_Transmit(_huart, (uint8_t *) (bits), 1, 10) ;
+	HAL_UART_Transmit(_huart, (uint8_t *) (bits & 0xFF), 1, 10) ;
 	GetAck() ;
 }
 
