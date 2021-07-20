@@ -157,7 +157,7 @@ void Pixxi_Serial_4DLib::getString(char * outStr, int strLen)
 	outStr[strLen - 1] = 0 ;
 }
 
-uint16_t Pixxi_Serial_4DLib::GetAckResp(void)
+int Pixxi_Serial_4DLib::GetAckResp(void)
 {
 	uint8_t readx[3] = {0, 0, 0};
 	Error4D = Err4D_OK;
@@ -181,7 +181,7 @@ uint16_t Pixxi_Serial_4DLib::GetAckResp(void)
 			Callback4D(Error4D, Error4D_Inv);
 	}
 
-	return (uint16_t) ((readx[1] << 8) | (readx[2] & 0xFF));
+	return ((readx[1] << 8) | (readx[2] & 0xFF));
 }
 
 /*
@@ -1110,7 +1110,7 @@ void Pixxi_Serial_4DLib::gfx_RulerGauge(uint16_t value, uint16_t hndl, uint16_t 
     GetAck();
 }
 
-uint16_t Pixxi_Serial_4DLib::img_ClearAttributes(uint16_t  Handle, uint16_t  Index, uint16_t  Value)
+int Pixxi_Serial_4DLib::img_ClearAttributes(uint16_t  Handle, uint16_t  Index, uint16_t  Value)
 {
 	WriteInt(F_img_ClearAttributes);
 	WriteInt(Handle);
@@ -1120,7 +1120,7 @@ uint16_t Pixxi_Serial_4DLib::img_ClearAttributes(uint16_t  Handle, uint16_t  Ind
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::img_Darken(uint16_t  Handle, uint16_t  Index)
+int Pixxi_Serial_4DLib::img_Darken(uint16_t  Handle, uint16_t  Index)
 {
 	WriteInt(F_img_Darken);
 	WriteInt(Handle);
@@ -1129,7 +1129,7 @@ uint16_t Pixxi_Serial_4DLib::img_Darken(uint16_t  Handle, uint16_t  Index)
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::img_Disable(uint16_t  Handle, uint16_t  Index)
+int Pixxi_Serial_4DLib::img_Disable(uint16_t  Handle, uint16_t  Index)
 {
 	WriteInt(F_img_Disable);
 	WriteInt(Handle);
@@ -1138,7 +1138,7 @@ uint16_t Pixxi_Serial_4DLib::img_Disable(uint16_t  Handle, uint16_t  Index)
 return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::img_Enable(uint16_t  Handle, uint16_t  Index)
+int Pixxi_Serial_4DLib::img_Enable(uint16_t  Handle, uint16_t  Index)
 {
 	WriteInt(F_img_Enable);
 	WriteInt(Handle);
@@ -1147,7 +1147,7 @@ uint16_t Pixxi_Serial_4DLib::img_Enable(uint16_t  Handle, uint16_t  Index)
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::img_GetWord(uint16_t  Handle, uint16_t  Index, uint16_t  Offset )
+int Pixxi_Serial_4DLib::img_GetWord(uint16_t  Handle, uint16_t  Index, uint16_t  Offset )
 {
 	WriteInt(F_img_GetWord);
 	WriteInt(Handle);
@@ -1157,7 +1157,7 @@ uint16_t Pixxi_Serial_4DLib::img_GetWord(uint16_t  Handle, uint16_t  Index, uint
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::img_Lighten(uint16_t  Handle, uint16_t  Index)
+int Pixxi_Serial_4DLib::img_Lighten(uint16_t  Handle, uint16_t  Index)
 {
 	WriteInt(F_img_Lighten);
 	WriteInt(Handle);
@@ -1166,7 +1166,7 @@ uint16_t Pixxi_Serial_4DLib::img_Lighten(uint16_t  Handle, uint16_t  Index)
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::img_SetAttributes(uint16_t  Handle, uint16_t  Index, uint16_t  Value)
+int Pixxi_Serial_4DLib::img_SetAttributes(uint16_t  Handle, uint16_t  Index, uint16_t  Value)
 {
 	WriteInt(F_img_SetAttributes);
 	WriteInt(Handle);
@@ -1176,7 +1176,7 @@ uint16_t Pixxi_Serial_4DLib::img_SetAttributes(uint16_t  Handle, uint16_t  Index
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::img_SetPosition(uint16_t  Handle, uint16_t  Index, uint16_t  Xpos, uint16_t  Ypos)
+int Pixxi_Serial_4DLib::img_SetPosition(uint16_t  Handle, uint16_t  Index, uint16_t  Xpos, uint16_t  Ypos)
 {
 	WriteInt(F_img_SetPosition);
 	WriteInt(Handle);
@@ -1187,7 +1187,7 @@ uint16_t Pixxi_Serial_4DLib::img_SetPosition(uint16_t  Handle, uint16_t  Index, 
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::img_SetWord(uint16_t  Handle, uint16_t  Index, uint16_t  Offset , uint16_t  Word)
+int Pixxi_Serial_4DLib::img_SetWord(uint16_t  Handle, uint16_t  Index, uint16_t  Offset , uint16_t  Word)
 {
 	WriteInt(F_img_SetWord);
 	WriteInt(Handle);
@@ -1198,7 +1198,7 @@ uint16_t Pixxi_Serial_4DLib::img_SetWord(uint16_t  Handle, uint16_t  Index, uint
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::img_Show(uint16_t  Handle, uint16_t  Index)
+int Pixxi_Serial_4DLib::img_Show(uint16_t  Handle, uint16_t  Index)
 {
 	WriteInt(F_img_Show);
 	WriteInt(Handle);
@@ -1207,7 +1207,7 @@ uint16_t Pixxi_Serial_4DLib::img_Show(uint16_t  Handle, uint16_t  Index)
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::img_Touched(uint16_t  Handle, uint16_t  Index)
+int Pixxi_Serial_4DLib::img_Touched(uint16_t  Handle, uint16_t  Index)
 {
 	WriteInt(F_img_Touched);
 	WriteInt(Handle);
@@ -1230,7 +1230,7 @@ void Pixxi_Serial_4DLib::img_FunctionCall(uint16_t imgHndl, uint16_t index, uint
     GetAck();
 }
 
-uint16_t Pixxi_Serial_4DLib::media_Flush()
+int Pixxi_Serial_4DLib::media_Flush()
 {
 	WriteInt(F_media_Flush);
 
@@ -1246,7 +1246,7 @@ void Pixxi_Serial_4DLib::media_Image(uint16_t  X, uint16_t  Y)
 	GetAck();
 }
 
-uint16_t Pixxi_Serial_4DLib::media_Init()
+int Pixxi_Serial_4DLib::media_Init()
 {
 	WriteInt(F_media_Init);
 
@@ -1260,14 +1260,14 @@ uint16_t Pixxi_Serial_4DLib::media_RdSector(uint8_t *  SectorIn)
 	return GetAckResSector(SectorIn);
 }
 
-uint16_t Pixxi_Serial_4DLib::media_ReadByte()
+int Pixxi_Serial_4DLib::media_ReadByte()
 {
 	WriteInt(F_media_ReadByte);
 
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::media_ReadWord()
+int Pixxi_Serial_4DLib::media_ReadWord()
 {
 	WriteInt(F_media_ReadWord);
 
@@ -1311,7 +1311,7 @@ void Pixxi_Serial_4DLib::media_VideoFrame(uint16_t  X, uint16_t  Y, uint16_t  Fr
 	GetAck();
 }
 
-uint16_t Pixxi_Serial_4DLib::media_WriteByte(uint16_t  Byte)
+int Pixxi_Serial_4DLib::media_WriteByte(uint16_t  Byte)
 {
 	WriteInt(F_media_WriteByte);
 	WriteInt(Byte);
@@ -1319,7 +1319,7 @@ uint16_t Pixxi_Serial_4DLib::media_WriteByte(uint16_t  Byte)
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::media_WriteWord(uint16_t  Word)
+int Pixxi_Serial_4DLib::media_WriteWord(uint16_t  Word)
 {
 	WriteInt(F_media_WriteWord);
 	WriteInt(Word);
@@ -1327,7 +1327,7 @@ uint16_t Pixxi_Serial_4DLib::media_WriteWord(uint16_t  Word)
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::media_WrSector(uint8_t *  SectorOut)
+int Pixxi_Serial_4DLib::media_WrSector(uint8_t *  SectorOut)
 {
 	WriteInt(F_media_WrSector);
 	WriteBytes(SectorOut, 512);
@@ -1335,7 +1335,7 @@ uint16_t Pixxi_Serial_4DLib::media_WrSector(uint8_t *  SectorOut)
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::mem_Alloc(uint16_t size)
+int Pixxi_Serial_4DLib::mem_Alloc(uint16_t size)
 {
 	WriteInt(F_mem_Alloc);
 	WriteInt(size);
@@ -1343,7 +1343,7 @@ uint16_t Pixxi_Serial_4DLib::mem_Alloc(uint16_t size)
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::mem_Free(uint16_t  Handle)
+int Pixxi_Serial_4DLib::mem_Free(uint16_t  Handle)
 {
 	WriteInt(F_mem_Free);
 	WriteInt(Handle);
@@ -1351,13 +1351,13 @@ uint16_t Pixxi_Serial_4DLib::mem_Free(uint16_t  Handle)
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::mem_Heap()
+int Pixxi_Serial_4DLib::mem_Heap()
 {
 	WriteInt(F_mem_Heap);
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::pin_HI(uint16_t Pin)
+int Pixxi_Serial_4DLib::pin_HI(uint16_t Pin)
 {
 	WriteInt(F_pin_HI);
 	WriteInt(Pin);
@@ -1365,7 +1365,7 @@ uint16_t Pixxi_Serial_4DLib::pin_HI(uint16_t Pin)
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::peekM(uint16_t  Address)
+int Pixxi_Serial_4DLib::peekM(uint16_t  Address)
 {
 	WriteInt(F_peekM);
 	WriteInt(Address);
@@ -1373,7 +1373,7 @@ uint16_t Pixxi_Serial_4DLib::peekM(uint16_t  Address)
 	return GetAckResp();
 }
 
-uint16_t Pixxi_Serial_4DLib::pin_LO(uint16_t Pin)
+int Pixxi_Serial_4DLib::pin_LO(uint16_t Pin)
 {
 	WriteInt(F_pin_LO);
 	WriteInt(Pin);
@@ -1381,7 +1381,7 @@ uint16_t Pixxi_Serial_4DLib::pin_LO(uint16_t Pin)
 	return GetAckResp() ;
 }
 
-uint16_t Pixxi_Serial_4DLib::pin_Read(uint16_t Pin)
+int Pixxi_Serial_4DLib::pin_Read(uint16_t Pin)
 {
 	WriteInt(F_pin_Read);
 	WriteInt(Pin);
@@ -1389,7 +1389,7 @@ uint16_t Pixxi_Serial_4DLib::pin_Read(uint16_t Pin)
 	return GetAckResp() ;
 }
 
-uint16_t Pixxi_Serial_4DLib::pin_Set(uint16_t Mode, uint16_t Pin)
+int Pixxi_Serial_4DLib::pin_Set(uint16_t Mode, uint16_t Pin)
 {
 	WriteInt(F_pin_Set);
 	WriteInt(Mode);
